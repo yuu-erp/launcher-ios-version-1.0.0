@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+:root {
+  --bg-main: rgba(255, 255, 255, 0.1);
+  --bg-button: rgba(255, 255, 255, 0.4);
+  --blur-main: blur(15px);
+}
+
+[data-theme="dark"] {
+  --bg-main: rgba(0, 0, 0, 0.1);
+  --bg-button: rgba(0, 0, 0, 0.4);
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  box-sizing: border-box;
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+@layer base {
+  body {
+    @apply w-screen h-screen overflow-hidden bg-[#242424];
+    color: rgba(255, 255, 255, 0.87);
+    background: url("https://i.pinimg.com/736x/09/c9/37/09c9375b7b6e3d4fcf16eb38a8146611.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+  }
+  #app {
+    @apply w-full h-full relative;
+  }
+}
+@layer components {
+  .layout-absolute {
+    @apply absolute left-0 right-0 flex items-center justify-center z-10;
+  }
+  .button-status-bar {
+    background: var(--bg-button);
+    backdrop-filter: var(--blur-main);
+    @apply border-none outline-none w-16 h-9 flex
+      items-center justify-center rounded-full font-semibold;
+  }
+}
