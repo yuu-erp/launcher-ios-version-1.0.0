@@ -2,7 +2,7 @@ import "./style.css";
 
 import { InMemoryStorageAdapter } from "@core/infrastructure/storage/in-memory-storage.adapter";
 import { DappModule } from "./modules/dapp/application/dapp.module";
-import { layoutRender } from "./view/layout-render";
+import { layoutRender, updateLoading } from "./view/layout-render";
 import { LayoutModule } from "./modules/layout/application/layout.module";
 
 async function bootstrap() {
@@ -21,6 +21,7 @@ async function bootstrap() {
     console.log("InMemoryStorageAdapter: ", inMemoryStorageAdapter.getAll());
 
     layoutRender(layout);
+    updateLoading(false);
   } catch (error) {
     console.error(error);
   }
