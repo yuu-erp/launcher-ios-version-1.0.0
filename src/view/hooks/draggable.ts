@@ -1,6 +1,5 @@
 import { Emitter } from "@core/infrastructure/emitter";
 import { DraggableCore } from "./draggable-core";
-import { PageDraggable } from "./page-draggable";
 
 export class Draggable extends DraggableCore {
   private startX: number = 0;
@@ -10,34 +9,28 @@ export class Draggable extends DraggableCore {
   private holdTimeout: number | undefined;
   private moveFrame: number | null = null;
 
-  constructor(
-    element: HTMLElement,
-    private readonly emitter: Emitter,
-    private readonly pageDraggable: PageDraggable
-  ) {
+  constructor(element: HTMLElement, private readonly emitter: Emitter) {
     super(element);
   }
 
   onStartDraggable(event: TouchEvent | MouseEvent): void {
     if (this.isMoveMain) return;
     const { clientX, clientY } = this.getClientCoordinates(event);
-    this.isMoveMain = true;
-    this.timeStart = performance.now();
-    this.startX = clientX;
-    this.startY = clientY;
+    this.setStartDraggable(clientX, clientY);
+
+    // Trigger edit mode after 500ms hold
     this.holdTimeout = window.setTimeout(() => {
       this.emitter.emit("toggleEditMode", true);
     }, 500);
-    this.pageDraggable.onStartPage();
   }
 
   onMoveDraggable(event: TouchEvent | MouseEvent): void {
     if (!this.isMoveMain) return;
+    const { clientX, clientY } = this.getClientCoordinates(event);
     if (this.moveFrame) {
       cancelAnimationFrame(this.moveFrame);
     }
     this.moveFrame = requestAnimationFrame(() => {
-      const { clientX, clientY } = this.getClientCoordinates(event);
       const { deltaX, deltaY } = this.calculateDelta(clientX, clientY, true);
       const deltaThreshold = 2;
       if (
@@ -45,20 +38,27 @@ export class Draggable extends DraggableCore {
         Math.abs(deltaY) < deltaThreshold
       )
         return;
-      clearTimeout(this.holdTimeout);
-      this.pageDraggable.onMovePage(deltaX);
+
+      // Cancel the holdTimeout if movement exceeds threshold
+      if (this.holdTimeout) {
+        clearTimeout(this.holdTimeout);
+      }
+      this.isMoveMain = true; // Continue with dragging
     });
   }
 
   onEndDraggable(event: TouchEvent | MouseEvent): void {
-    if (!this.isMoveMain) return;
     const { clientX, clientY } = this.getClientCoordinates(event);
-    const { deltaX, deltaTime } = this.calculateDelta(clientX, clientY, true);
+    const { deltaX, deltaY } = this.calculateDelta(clientX, clientY, true);
 
-    clearTimeout(this.holdTimeout);
+    clearTimeout(this.holdTimeout); // Clear the timeout if movement happens
 
-    this.pageDraggable.onEndPage(deltaX, deltaTime, this.emitter);
-    this.reset();
+    // If no significant movement (tap), switch back to view mode
+    if (Math.abs(deltaX) < 5 && Math.abs(deltaY) < 5) {
+      this.emitter.emit("toggleEditMode", false); // Switch to view mode
+    } else {
+      this.reset();
+    }
   }
 
   private reset() {
@@ -78,5 +78,12 @@ export class Draggable extends DraggableCore {
     const deltaY = clientY - this.startY;
     const deltaTime = includeTime ? performance.now() - this.timeStart : 0;
     return { deltaX, deltaY, deltaTime };
+  }
+
+  private setStartDraggable(clientX: number, clientY: number) {
+    this.isMoveMain = true;
+    this.timeStart = performance.now();
+    this.startX = clientX;
+    this.startY = clientY;
   }
 }

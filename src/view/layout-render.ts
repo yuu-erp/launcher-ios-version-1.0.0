@@ -1,44 +1,20 @@
-import { LayoutProps } from "src/modules/layout/domain/types/layout.type";
-import { createStatusBar } from "./status-bar";
-import { createMainGrid } from "./main-grid";
-import { createPagination } from "./pagination";
-import { createDock } from "./dock";
 import { styleElement } from "@core/helpers";
-import { StoragePort } from "@core/infrastructure/storage/storage.port";
 import { Emitter } from "@core/infrastructure/emitter";
+import { StoragePort } from "@core/infrastructure/storage/storage.port";
+import { DappController } from "src/modules/dapp/application/dapp.controller";
+import { DappResponse } from "src/modules/dapp/domain/entities/dapp.type";
 import { Draggable } from "../modules/draggable/draggable";
 import { PageDraggable } from "../modules/draggable/page-draggable";
+import { LayoutProps } from "../modules/layout/domain/types/layout.type";
+import { createDock } from "./dock";
+import { createMainGrid, renderListDapp } from "./main-grid";
+import { createPagination } from "./pagination";
+import { createStatusBar } from "./status-bar";
 
 function getRootElement(): HTMLDivElement {
   const rootElement = document.querySelector<HTMLDivElement>("#app");
   if (!rootElement) throw new Error("Không tìm thấy phần tử #app");
   return rootElement;
-}
-
-export function layoutRender(
-  layout: LayoutProps,
-  storage: StoragePort,
-  emitter: Emitter
-): void {
-  const totalPage = storage.get("totalPage") || 1;
-  const currentPage = storage.get("currentPage") || 0;
-
-  const rootElement = getRootElement();
-  // Create sections using separate functions
-  const statusBar = createStatusBar(layout);
-  const main = createMainGrid(totalPage);
-  const pagination = createPagination(layout);
-  const dock = createDock(layout);
-  // Clear previous content and append new elements
-  while (rootElement.firstChild) {
-    rootElement.removeChild(rootElement.firstChild);
-  }
-  rootElement.append(statusBar, main, pagination, dock);
-
-  const pageDraggable = new PageDraggable(main, currentPage, totalPage);
-  new Draggable(main, emitter, pageDraggable);
-
-  emitter.on("toggleEditMode", toggleEditMode);
 }
 
 export function updateLoading(isLoading: boolean) {
@@ -48,6 +24,64 @@ export function updateLoading(isLoading: boolean) {
     display: isLoading ? "flex" : "none",
   });
 }
+
 export function toggleEditMode(isEdit: boolean) {
   document.body.classList.toggle("edit", isEdit);
+}
+
+export function layoutRender(
+  layout: LayoutProps,
+  inMemoryStorageAdapter: StoragePort,
+  localStorageAdapter: StoragePort,
+  dappController: DappController
+): void {
+  const totalPage = inMemoryStorageAdapter.get("totalPage") || 1;
+  const currentPage = localStorageAdapter.get("currentPage") || 0;
+  const dapps = dappController.getDapps();
+
+  // set current page vào localstorage
+  function setCurrentPage(currentPage: number) {
+    localStorageAdapter.set("currentPage", currentPage);
+  }
+
+  // lấy ra danh sách ứng dụng cần được render theo currentPage
+  function getDappsByPageRange(currentPage: number): DappResponse[] {
+    const pagesToFetch = [currentPage - 1, currentPage, currentPage + 1].filter(
+      (page) => page >= 0 && page < totalPage
+    );
+    return dapps.filter((dapp) => pagesToFetch.includes(dapp.page));
+  }
+
+  // render danh sách ứng dụng
+  function handleRenderDappList(currentPage: number) {
+    const dapps = getDappsByPageRange(currentPage);
+    renderListDapp(dapps, layout);
+  }
+
+  // handle Event onChangePageMainGrid
+  function onChangePageMainGrid(currentPage: number) {
+    setCurrentPage(currentPage);
+    handleRenderDappList(currentPage);
+  }
+
+  const emitter = new Emitter();
+
+  const rootElement = getRootElement();
+  // Create sections using separate functions
+  const statusBar = createStatusBar(layout);
+  const mainGrid = createMainGrid(totalPage);
+  const pagination = createPagination(layout);
+  const dock = createDock(layout);
+
+  rootElement.append(statusBar, mainGrid, pagination, dock);
+
+  handleRenderDappList(currentPage);
+
+  const pageDraggable = new PageDraggable(mainGrid, currentPage, totalPage);
+
+  pageDraggable.scrollToPageNotrequestAnimationFrame(currentPage);
+
+  new Draggable(mainGrid, emitter, pageDraggable);
+  emitter.on("toggleEditMode", toggleEditMode);
+  emitter.on("onChangePageMainGrid", onChangePageMainGrid);
 }

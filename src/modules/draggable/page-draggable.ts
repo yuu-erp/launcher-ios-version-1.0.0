@@ -1,4 +1,5 @@
 import { easeInOutQuadratic } from "@core/helpers";
+import { Emitter } from "@core/infrastructure/emitter";
 
 export class PageDraggable {
   private currentPage: number;
@@ -22,7 +23,7 @@ export class PageDraggable {
     this.movePage(to);
   }
 
-  onEndPage(deltaX: number, deltaTime: number) {
+  onEndPage(deltaX: number, deltaTime: number, emitter: Emitter) {
     const deltaThreshold = 2;
     if (Math.abs(deltaX) < deltaThreshold) return;
     // Kiểm tra giá trị deltaX và deltaTime
@@ -46,6 +47,7 @@ export class PageDraggable {
         this.currentPage = Math.min(maxPage, this.currentPage + 1);
       }
     }
+    emitter.emit("onChangePageMainGrid", this.currentPage);
     this.scrollToPage(this.currentPage);
     this.resetScrollLeft();
   }
@@ -89,7 +91,11 @@ export class PageDraggable {
       requestAnimationFrame(animateScroll);
     });
   }
-
+  scrollToPageNotrequestAnimationFrame(page: number = 0) {
+    if (!this.scrollElement) return;
+    const to = this.scrollElement.offsetWidth * page;
+    this.movePage(to);
+  }
   resetScrollLeft(): void {
     this.scrollLeft = 0;
   }

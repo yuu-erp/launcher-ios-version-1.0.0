@@ -34,7 +34,7 @@ export function createStatusBar(layout: LayoutProps) {
     "h-full",
     "flex",
     "items-center",
-    "justify-between",
+    "justify-between", //justify-around
     "mx-auto"
   );
   styleElement(statusBarContainer.style, {

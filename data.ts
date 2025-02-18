@@ -11400,3 +11400,66 @@ export const DATA = [
     },
   ],
 ];
+
+export const DATA_DOCK = [
+  {
+    id: 100000.1,
+    name: "Dapp 100000.1",
+    logo: "https://via.placeholder.com/50",
+    url: "https://example.com",
+    type: 1,
+    page: 1,
+    isFavorite: 1,
+    position: {
+      width: 1,
+      height: 1,
+      x: 0,
+      y: 0,
+    },
+  },
+  {
+    id: 100000.2,
+    name: "Dapp 100000.2",
+    logo: "https://via.placeholder.com/50",
+    url: "https://example.com",
+    type: 1,
+    page: 1,
+    isFavorite: 1,
+    position: {
+      width: 1,
+      height: 1,
+      x: 1,
+      y: 0,
+    },
+  },
+  {
+    id: 100000.3,
+    name: "Dapp 100000.3",
+    logo: "https://via.placeholder.com/50",
+    url: "https://example.com",
+    type: 1,
+    page: 1,
+    isFavorite: 1,
+    position: {
+      width: 1,
+      height: 1,
+      x: 2,
+      y: 0,
+    },
+  },
+  {
+    id: 100000.4,
+    name: "Dapp 100000.4",
+    logo: "https://via.placeholder.com/50",
+    url: "https://example.com",
+    type: 1,
+    page: 1,
+    isFavorite: 1,
+    position: {
+      width: 1,
+      height: 1,
+      x: 3,
+      y: 0,
+    },
+  },
+];

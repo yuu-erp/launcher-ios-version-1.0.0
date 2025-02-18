@@ -1,16 +1,16 @@
 import { StoragePort } from "@core/infrastructure/system-core/system-core.port";
 import { IDappRepository } from "../domain/repositories/dapp.repository";
-import { DappRepositoryImpl } from "../infrastructure/dapp.impl.reposity";
-import { DappMapper } from "./mappers/dapp.mapper";
-import { CreateDappInPort } from "../domain/use-case/port/create-dapp.in-port";
 import { CreateDappUseCase } from "../domain/use-case/interactors/create-dapp.interactor";
-import { UpdateDappInPort } from "../domain/use-case/port/update-dapp.in-port";
-import { UpdateDappUseCase } from "../domain/use-case/interactors/update-dapp.interactor";
-import { GetDappsInPort } from "../domain/use-case/port/get-dapps.in-port";
 import { GetDappsUseCase } from "../domain/use-case/interactors/get-dapps.interactor";
-import { InsertDappsInPort } from "../domain/use-case/port/insert-dapps.in-port";
 import { InsertDappsUseCase } from "../domain/use-case/interactors/insert-dapps.interactor";
+import { UpdateDappUseCase } from "../domain/use-case/interactors/update-dapp.interactor";
+import { CreateDappInPort } from "../domain/use-case/port/create-dapp.in-port";
+import { GetDappsInPort } from "../domain/use-case/port/get-dapps.in-port";
+import { InsertDappsInPort } from "../domain/use-case/port/insert-dapps.in-port";
+import { UpdateDappInPort } from "../domain/use-case/port/update-dapp.in-port";
+import { DappRepositoryImpl } from "../infrastructure/dapp.impl.reposity";
 import { DappController } from "./dapp.controller";
+import { DappMapper } from "./mappers/dapp.mapper";
 
 export class DappModule {
   private static instance: DappModule;

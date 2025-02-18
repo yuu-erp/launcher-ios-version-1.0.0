@@ -4,11 +4,20 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./src/style.css" />
     <title>Vite + TS</title>
   </head>
   <body data-theme="light">
     <div id="app"></div>
-    <div id="loading" style="display: flex">Loading...</div>
+    <!-- <div id="loading" style="display: flex">Loading...</div> -->
+    <template id="dapp-template">
+      <div id="application" class="itemDapp">
+        <div class="itemDapp_container dapp-edit-mode">
+          <div class="itemDapp_container-logo"></div>
+          <p class="itemDapp_container-name"></p>
+        </div>
+      </div>
+    </template>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

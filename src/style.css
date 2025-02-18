@@ -19,14 +19,13 @@
   appearance: none;
   -moz-appearance: none;
   -webkit-appearance: none;
-  color: rgba(255, 255, 255, 0.87);
 }
 
 @layer base {
   body {
     @apply w-screen h-screen overflow-hidden bg-[#242424];
     color: rgba(255, 255, 255, 0.87);
-    background: url("https://i.pinimg.com/736x/09/c9/37/09c9375b7b6e3d4fcf16eb38a8146611.jpg");
+    background: url("https://i.pinimg.com/736x/55/c0/58/55c058004e84ba969cfdb4eb3d4a1267.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -50,6 +49,28 @@
       @apply flex h-full relative;
     }
   }
+
+  body.edit .dapp-edit-mode {
+    animation: wiggle 0.5s infinite ease-in-out;
+  }
+
+  @keyframes wiggle {
+    0% {
+      transform: translateX(0) rotate(-2deg);
+    }
+    25% {
+      transform: translateX(0) rotate(2deg);
+    }
+    50% {
+      transform: translateX(0) rotate(-2deg);
+    }
+    75% {
+      transform: translateX(0) rotate(2deg);
+    }
+    100% {
+      transform: translateX(0) rotate(-2deg);
+    }
+  }
 }
 @layer components {
   .layout-absolute {
@@ -60,5 +81,18 @@
     backdrop-filter: var(--blur-main);
     @apply border-none outline-none w-16 h-9 flex
       items-center justify-center rounded-full font-semibold;
+  }
+
+  .itemDapp {
+    @apply absolute;
+    & .itemDapp_container {
+      @apply w-full h-full flex flex-col items-center gap-1;
+      & .itemDapp_container-logo {
+        @apply bg-white rounded-[14px] shadow;
+      }
+      & .itemDapp_container-name {
+        @apply text-white font-medium text-xs line-clamp-1 px-1 w-full flex items-center justify-center;
+      }
+    }
   }
 }

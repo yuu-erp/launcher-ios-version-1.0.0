@@ -34,6 +34,7 @@ export class DappController {
     return payload;
   }
   getDapps() {
-    return this.getDappsUseCase.execute();
+    const dapps = this.getDappsUseCase.execute();
+    return dapps.map(this.mapper.toResponse);
   }
 }
