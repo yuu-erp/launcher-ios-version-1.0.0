@@ -32,6 +32,7 @@ export class DappMapper implements Mapper<DappEntity, DappResponse> {
       page: props.page,
       position: props.position.raw(),
       type: props.type as DappTypeEnum,
+      isFavorite: props.isFavorite,
     };
   }
 }

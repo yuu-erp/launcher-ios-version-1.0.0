@@ -84,7 +84,7 @@
   }
 
   .itemDapp {
-    @apply absolute;
+    @apply z-20;
     & .itemDapp_container {
       @apply w-full h-full flex flex-col items-center gap-1;
       & .itemDapp_container-logo {

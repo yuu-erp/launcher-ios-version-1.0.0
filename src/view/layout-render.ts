@@ -52,7 +52,7 @@ export function layoutRender(
     return dapps.filter((dapp) => pagesToFetch.includes(dapp.page));
   }
 
-  // render danh sách ứng dụng
+  // xử lý render danh sách ứng dụng
   function handleRenderDappList(currentPage: number) {
     const dapps = getDappsByPageRange(currentPage);
     renderListDapp(dapps, layout);
@@ -63,7 +63,7 @@ export function layoutRender(
     setCurrentPage(currentPage);
     handleRenderDappList(currentPage);
   }
-
+  // khai báo emitter Event-driven architecture
   const emitter = new Emitter();
 
   const rootElement = getRootElement();
@@ -77,11 +77,14 @@ export function layoutRender(
 
   handleRenderDappList(currentPage);
 
+  // Khai báo lớp page draggable
   const pageDraggable = new PageDraggable(mainGrid, currentPage, totalPage);
-
+  // di chuyển page theo current page
   pageDraggable.scrollToPageNotrequestAnimationFrame(currentPage);
 
   new Draggable(mainGrid, emitter, pageDraggable);
+
+  // listen event
   emitter.on("toggleEditMode", toggleEditMode);
   emitter.on("onChangePageMainGrid", onChangePageMainGrid);
 }

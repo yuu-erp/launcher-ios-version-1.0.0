@@ -21,6 +21,7 @@ export interface DappProps {
   type: DappTypeEnum;
   page: number;
   position: DappPosition;
+  isFavorite: number;
 }
 export interface DappResponse {
   id: number;
@@ -30,4 +31,5 @@ export interface DappResponse {
   page: number;
   position: IDappPosition;
   type: DappTypeEnum;
+  isFavorite: number;
 }

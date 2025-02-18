@@ -21,11 +21,12 @@ export function createDapp(props: DappViewProps) {
   ) as HTMLElement;
 
   styleElement(element.style, {
-    width: itemWidth + "px",
-    height: itemHeight + "px",
+    width: dapp.isFavorite ? "auto" : itemWidth + "px",
+    height: dapp.isFavorite ? "auto" : itemHeight + "px",
     left: "0",
     top: "0",
     transform: `translate(${left}px, ${top}px)`,
+    position: dapp.isFavorite ? "fixed" : "absolute",
   });
 
   const container = element.querySelector(".itemDapp_container") as HTMLElement;
@@ -36,15 +37,18 @@ export function createDapp(props: DappViewProps) {
     ".itemDapp_container-name"
   ) as HTMLElement;
 
-  styleElement(container.style, {
-    paddingTop: outerPadding + "px",
-  });
-
   styleElement(containerLogo.style, {
     width: sizeIcon + "px",
     height: sizeIcon + "px",
   });
-  containerName.textContent = dapp.name;
+  if (!dapp.isFavorite) {
+    containerName.textContent = dapp.name;
+    styleElement(container.style, {
+      paddingTop: outerPadding + "px",
+    });
+  } else {
+    containerName.style.display = "none";
+  }
 
   return element;
 }

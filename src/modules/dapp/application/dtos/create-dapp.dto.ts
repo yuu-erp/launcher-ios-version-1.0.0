@@ -8,4 +8,5 @@ export interface CreateDappDto {
   type: DappTypeEnum;
   page: number;
   position: IDappPosition;
+  isFavorite: number;
 }
