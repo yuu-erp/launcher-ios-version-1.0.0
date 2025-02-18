@@ -4,6 +4,10 @@ import { createMainGrid } from "./main-grid";
 import { createPagination } from "./pagination";
 import { createDock } from "./dock";
 import { styleElement } from "@core/helpers";
+import { StoragePort } from "@core/infrastructure/storage/storage.port";
+import { Emitter } from "@core/infrastructure/emitter";
+import { Draggable } from "../modules/draggable/draggable";
+import { PageDraggable } from "../modules/draggable/page-draggable";
 
 function getRootElement(): HTMLDivElement {
   const rootElement = document.querySelector<HTMLDivElement>("#app");
@@ -11,16 +15,30 @@ function getRootElement(): HTMLDivElement {
   return rootElement;
 }
 
-export function layoutRender(layout: LayoutProps): void {
+export function layoutRender(
+  layout: LayoutProps,
+  storage: StoragePort,
+  emitter: Emitter
+): void {
+  const totalPage = storage.get("totalPage") || 1;
+  const currentPage = storage.get("currentPage") || 0;
+
   const rootElement = getRootElement();
   // Create sections using separate functions
   const statusBar = createStatusBar(layout);
-  const main = createMainGrid();
+  const main = createMainGrid(totalPage);
   const pagination = createPagination(layout);
   const dock = createDock(layout);
   // Clear previous content and append new elements
-  rootElement.innerHTML = "";
+  while (rootElement.firstChild) {
+    rootElement.removeChild(rootElement.firstChild);
+  }
   rootElement.append(statusBar, main, pagination, dock);
+
+  const pageDraggable = new PageDraggable(main, currentPage, totalPage);
+  new Draggable(main, emitter, pageDraggable);
+
+  emitter.on("toggleEditMode", toggleEditMode);
 }
 
 export function updateLoading(isLoading: boolean) {
@@ -29,4 +47,7 @@ export function updateLoading(isLoading: boolean) {
   styleElement(loadingElement.style, {
     display: isLoading ? "flex" : "none",
   });
+}
+export function toggleEditMode(isEdit: boolean) {
+  document.body.classList.toggle("edit", isEdit);
 }

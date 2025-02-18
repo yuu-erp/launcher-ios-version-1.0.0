@@ -32,10 +32,23 @@
     background-position: center;
   }
   #app {
-    @apply w-full h-full relative;
+    @apply w-full h-full relative overflow-hidden;
   }
   #loading {
     @apply fixed inset-0 bg-[#141414] flex items-center justify-center font-bold text-xl z-50;
+  }
+  body.edit .statusBar-container {
+    display: flex !important;
+  }
+  body .statusBar-container {
+    display: none !important;
+  }
+
+  body #main-grid {
+    @apply overflow-hidden w-full h-full relative;
+    & .main-grid_container {
+      @apply flex h-full relative;
+    }
   }
 }
 @layer components {

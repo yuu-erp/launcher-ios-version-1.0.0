@@ -21,9 +21,7 @@ export function createStatusBar(layout: LayoutProps) {
   statusBar.classList.add("layout-absolute");
   styleElement(statusBar.style, {
     height: heightStatusBar + "px",
-    width: screenCheckPoint + "px",
-    paddingLeft: outerPadding + "px",
-    paddingRight: outerPadding + "px",
+    width: "100%",
   });
 
   const addButton = createButton("status-bar-button-add", "Thêm", 0);
@@ -31,6 +29,7 @@ export function createStatusBar(layout: LayoutProps) {
 
   const statusBarContainer = document.createElement("div");
   statusBarContainer.classList.add(
+    "statusBar-container",
     "w-full",
     "h-full",
     "flex",
@@ -38,7 +37,13 @@ export function createStatusBar(layout: LayoutProps) {
     "justify-between",
     "mx-auto"
   );
+  styleElement(statusBarContainer.style, {
+    width: screenCheckPoint + "px",
+    paddingLeft: outerPadding + "px",
+    paddingRight: outerPadding + "px",
+  });
   statusBarContainer.append(addButton, doneButton);
+
   statusBar.appendChild(statusBarContainer);
 
   return statusBar;
