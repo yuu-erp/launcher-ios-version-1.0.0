@@ -2,7 +2,7 @@ import { styleElement } from "@core/helpers";
 import { DappResponse } from "src/modules/dapp/domain/entities/dapp.type";
 import { LayoutProps } from "src/modules/layout/domain/types/layout.type";
 import { createDapp } from "./components/dapp";
-import { calculateTranslate } from "./hooks/position";
+import { calculateTranslate, calculateTranslateDock } from "./hooks/position";
 
 export function createMainGrid(totalPage: number = 0) {
   const mainGrid = document.createElement("div");
@@ -19,7 +19,7 @@ export function createMainGrid(totalPage: number = 0) {
   return mainGrid;
 }
 
-export function renderListDapp(dapps: DappResponse[], layout: LayoutProps) {
+export function renderListDataDapp(dapps: DappResponse[], layout: LayoutProps) {
   const fragment = document.createDocumentFragment();
   dapps.forEach((dapp) => {
     const dappElement = createDapp({
@@ -33,4 +33,20 @@ export function renderListDapp(dapps: DappResponse[], layout: LayoutProps) {
   if (!mainElementContainer)
     throw new Error("CLASS .main-grid_container not found!");
   mainElementContainer.replaceChildren(fragment);
+}
+
+export function renderListDockDapp(dapps: DappResponse[], layout: LayoutProps) {
+  const fragment = document.createDocumentFragment();
+  dapps.forEach((dapp) => {
+    const dappElement = createDapp({
+      dapp,
+      ...layout,
+      ...calculateTranslateDock(dapp, layout, dapps),
+    });
+    fragment.appendChild(dappElement);
+  });
+  const mainElementContainer = document.querySelector(".main-grid_container");
+  if (!mainElementContainer)
+    throw new Error("CLASS .main-grid_container not found!");
+  mainElementContainer.appendChild(fragment);
 }

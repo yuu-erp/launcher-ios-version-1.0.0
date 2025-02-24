@@ -7,7 +7,11 @@ import { Draggable } from "../modules/draggable/draggable";
 import { PageDraggable } from "../modules/draggable/page-draggable";
 import { LayoutProps } from "../modules/layout/domain/types/layout.type";
 import { createDock } from "./dock";
-import { createMainGrid, renderListDapp } from "./main-grid";
+import {
+  createMainGrid,
+  renderListDataDapp,
+  renderListDockDapp,
+} from "./main-grid";
 import { createPagination } from "./pagination";
 import { createStatusBar } from "./status-bar";
 
@@ -38,7 +42,8 @@ export function layoutRender(
   const totalPage = inMemoryStorageAdapter.get("totalPage") || 1;
   const currentPage = localStorageAdapter.get("currentPage") || 0;
   const dapps = dappController.getDapps();
-
+  const dataDapp = dapps.filter((item) => !item.isFavorite);
+  const dappDocks = dapps.filter((item) => item.isFavorite);
   // set current page vào localstorage
   function setCurrentPage(currentPage: number) {
     localStorageAdapter.set("currentPage", currentPage);
@@ -49,13 +54,13 @@ export function layoutRender(
     const pagesToFetch = [currentPage - 1, currentPage, currentPage + 1].filter(
       (page) => page >= 0 && page < totalPage
     );
-    return dapps.filter((dapp) => pagesToFetch.includes(dapp.page));
+    return dataDapp.filter((dapp) => pagesToFetch.includes(dapp.page));
   }
 
   // xử lý render danh sách ứng dụng
   function handleRenderDappList(currentPage: number) {
     const dapps = getDappsByPageRange(currentPage);
-    renderListDapp(dapps, layout);
+    renderListDataDapp(dapps, layout);
   }
 
   // handle Event onChangePageMainGrid
@@ -76,7 +81,7 @@ export function layoutRender(
   rootElement.append(statusBar, mainGrid, pagination, dock);
 
   handleRenderDappList(currentPage);
-
+  renderListDockDapp(dappDocks, layout);
   // Khai báo lớp page draggable
   const pageDraggable = new PageDraggable(mainGrid, currentPage, totalPage);
   // di chuyển page theo current page

@@ -5,25 +5,15 @@ export function calculateTranslate(
   dapp: DappResponse,
   layout: LayoutProps
 ): { left: number; top: number } {
-  const { page, position, isFavorite } = dapp;
+  const { page, position } = dapp;
   const {
     itemWidth,
     itemHeight,
     outerPadding,
     screenCheckPoint,
     heightStatusBar,
-    sizeIcon,
-    heightDock,
   } = layout;
   const { x, y } = position;
-
-  if (isFavorite) {
-    return {
-      left: 0,
-      top: innerHeight - sizeIcon - (heightDock - sizeIcon) / 2,
-    };
-  }
-
   return {
     left: Math.round(
       x * itemWidth +
@@ -35,4 +25,22 @@ export function calculateTranslate(
   };
 }
 
-export function calculateTranslateDock(x: number, y: number, page: number) {}
+export function calculateTranslateDock(
+  dapp: DappResponse,
+  layout: LayoutProps,
+  dappDocks: DappResponse[]
+) {
+  const { position } = dapp;
+  const { sizeIcon, heightDock, widthDock, prePaddingDock, columnDockNumber } =
+    layout;
+  const { x } = position;
+
+  const dockGap =
+    (widthDock - columnDockNumber * sizeIcon) / (columnDockNumber + 1);
+  const preDock = (columnDockNumber - dappDocks.length) * (sizeIcon + dockGap);
+
+  return {
+    left: preDock / 2 + prePaddingDock + dockGap + x * (sizeIcon + dockGap),
+    top: innerHeight - sizeIcon - (heightDock - sizeIcon) / 2,
+  };
+}

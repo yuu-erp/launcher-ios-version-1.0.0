@@ -41,6 +41,7 @@ export class CalculateLayoutService {
       columnDockNumber
     );
 
+    const prePaddingDock = this.calculatePrePaddingDock(widthDock);
     const grids = this.createGrid({
       columnNumber,
       rowsNumber,
@@ -66,6 +67,7 @@ export class CalculateLayoutService {
       itemHeight,
       outerPadding,
       grids,
+      prePaddingDock,
     };
   }
 
@@ -99,6 +101,10 @@ export class CalculateLayoutService {
       : columnDockNumber * sizeIcon +
           columnDockNumber * outerPadding +
           outerPadding;
+  }
+
+  private static calculatePrePaddingDock(dockWidth: number) {
+    return (innerWidth - dockWidth) / 2;
   }
 
   private static calculateGridDimensions(

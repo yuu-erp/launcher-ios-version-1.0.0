@@ -20,6 +20,7 @@ export interface LayoutProps {
   itemHeight: number;
   outerPadding: number;
   grids: IPosition[];
+  prePaddingDock: number;
 }
 
 export interface IPosition {
